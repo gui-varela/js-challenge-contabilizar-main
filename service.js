@@ -2,7 +2,7 @@ const validarEntradaDeDados = (lancamento) => {
    const erros = []
 
    if (!lancamento.cpf || !lancamento.valor) {
-      erros.push("Preencha todos os campos para registrar")
+      erros.push("Preencha todos os campos para registrar o lançamento")
    }
 
    if (isNaN(lancamento.cpf)) {
@@ -14,6 +14,10 @@ const validarEntradaDeDados = (lancamento) => {
 
       if (!cpfValido) {
          erros.push("Insira um CPF válido")
+      }
+
+      if (lancamento.cpf.length != 11) {
+         erros.push("O CPF deve ter exatamente 11 caracteres numéricos")
       }
    }
 
@@ -35,6 +39,11 @@ const recuperarSaldosPorConta = (lancamentos) => {
       return []
    }
 
+   const saldosPorCPF = agruparLançamentosPorCPF(lancamentos)
+   return saldosPorCPF
+}
+
+const agruparLançamentosPorCPF = (lancamentos) => {
    const saldosPorCPF = []
    
    lancamentos.forEach((lancamento) => {
@@ -47,7 +56,7 @@ const recuperarSaldosPorConta = (lancamentos) => {
          saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor})
       }
    })
-
+   
    return saldosPorCPF
 }
 
@@ -71,7 +80,15 @@ const recuperarMaiorMenorLancamentos = (cpf, lancamentos) => {
 }
 
 const recuperarMaioresSaldos = (lancamentos) => {
-   return []
+   const saldosPorCPF = agruparLançamentosPorCPF(lancamentos)
+   const saldosOrdenadosPorValor = saldosPorCPF.sort((a,b) => b.valor - a.valor)
+
+   if (saldosOrdenadosPorValor.length >= 3) {
+      const topTresMaioresSaldos = saldosOrdenadosPorValor.slice(0, 3)
+      return topTresMaioresSaldos
+   }
+
+   return saldosOrdenadosPorValor
 }
 
 const recuperarMaioresMedias = (lancamentos) => {
