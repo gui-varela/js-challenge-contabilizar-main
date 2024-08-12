@@ -1,38 +1,38 @@
 const validarEntradaDeDados = (lancamento) => {
-   const erros = [];
+   const erros = []
 
    if (!lancamento.cpf || !lancamento.valor) {
-      erros.push("Preencha todos os campos para registrar");
+      erros.push("Preencha todos os campos para registrar")
    }
 
    if (isNaN(lancamento.cpf)) {
-      erros.push("O CPF só aceita caracteres numéricos");
+      erros.push("O CPF só aceita caracteres numéricos")
    }
 
    if (lancamento.cpf && !isNaN(lancamento.cpf)) {
-      const cpfValido = verificarDigitosVerificadores(lancamento.cpf);
+      const cpfValido = verificarDigitosVerificadores(lancamento.cpf)
 
       if (!cpfValido) {
-         erros.push("Insira um CPF válido");
+         erros.push("Insira um CPF válido")
       }
    }
 
    if (isNaN(lancamento.valor)) {
-      erros.push("O valor deve ser um número");
+      erros.push("O valor deve ser um número")
    } else {
-      const valorParaFloat = parseFloat(lancamento.valor);
+      const valorParaFloat = parseFloat(lancamento.valor)
    
       if (valorParaFloat > 15000 || valorParaFloat < -2000) {
-         erros.push("O valor deve estar entre -2.000,00 e 15.000,00");
+         erros.push("O valor deve estar entre -2.000,00 e 15.000,00")
       }
    }
 
-   return erros.length > 0 ? erros.map(erro => `\n- ${erro}`) : null;
+   return erros.length > 0 ? erros.map(erro => `\n- ${erro}`) : null
 }
 
 const recuperarSaldosPorConta = (lancamentos) => {
    if (!lancamentos || lancamentos.length === 0) {
-      return [];
+      return []
    }
 
    const saldosPorCPF = []
@@ -52,7 +52,22 @@ const recuperarSaldosPorConta = (lancamentos) => {
 }
 
 const recuperarMaiorMenorLancamentos = (cpf, lancamentos) => {
-   return []
+   const lancamentosDaConta = lancamentos.filter(lancamento => lancamento.cpf === cpf)
+
+   if (!lancamentosDaConta || lancamentosDaConta.length === 0) {
+      return []
+   }
+
+   if (lancamentosDaConta.length === 1) {
+      const unicoLancamento = {cpf: lancamentosDaConta[0].cpf, valor: lancamentosDaConta[0].valor}
+      return [unicoLancamento, unicoLancamento]
+   }
+
+   const lancamentosOrdenadosPorValor = lancamentosDaConta.sort((a,b) => a.valor - b.valor)
+
+   const ultimoIndice = lancamentosDaConta.length - 1
+
+   return [lancamentosOrdenadosPorValor[0], lancamentosOrdenadosPorValor[ultimoIndice]]
 }
 
 const recuperarMaioresSaldos = (lancamentos) => {
@@ -119,7 +134,7 @@ const calculaSegundoDigitoVerificador = (novePrimeirosDigitosCPF) => {
    const somatorio = novePrimeirosComPrimeiroDigitoVerificador.reduce(
       (accumulator, currentValue, index) => accumulator + ((11 - index) * parseInt(currentValue)),
       0
-   );
+   )
 
    const resto = somatorio % 11
 
