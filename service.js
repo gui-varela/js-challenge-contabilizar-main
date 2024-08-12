@@ -1,15 +1,54 @@
 const validarEntradaDeDados = (lancamento) => {
-   const cpfValido = verificarDigitosVerificadores(lancamento.cpf)
+   const erros = [];
 
-   if (!cpfValido) {
-      return "insira um cpf valido"
+   if (!lancamento.cpf || !lancamento.valor) {
+      erros.push("Preencha todos os campos para registrar");
    }
 
-   return null
+   if (isNaN(lancamento.cpf)) {
+      erros.push("O CPF só aceita caracteres numéricos");
+   }
+
+   if (lancamento.cpf && !isNaN(lancamento.cpf)) {
+      const cpfValido = verificarDigitosVerificadores(lancamento.cpf);
+
+      if (!cpfValido) {
+         erros.push("Insira um CPF válido");
+      }
+   }
+
+   if (isNaN(lancamento.valor)) {
+      erros.push("O valor deve ser um número");
+   } else {
+      const valorParaFloat = parseFloat(lancamento.valor);
+   
+      if (valorParaFloat > 15000 || valorParaFloat < -2000) {
+         erros.push("O valor deve estar entre -2.000,00 e 15.000,00");
+      }
+   }
+
+   return erros.length > 0 ? erros.map(erro => `\n- ${erro}`) : null;
 }
 
 const recuperarSaldosPorConta = (lancamentos) => {
-   return []
+   if (!lancamentos || lancamentos.length === 0) {
+      return [];
+   }
+
+   const saldosPorCPF = []
+   
+   lancamentos.forEach((lancamento) => {
+      const saldoJaRegistrado = saldosPorCPF.find(saldo => saldo.cpf === lancamento.cpf)
+
+      if (saldoJaRegistrado) {
+         const inidiceRegistro = saldosPorCPF.indexOf(saldoJaRegistrado)
+         saldosPorCPF[inidiceRegistro].valor += lancamento.valor
+      } else {
+         saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor})
+      }
+   })
+
+   return saldosPorCPF
 }
 
 const recuperarMaiorMenorLancamentos = (cpf, lancamentos) => {
@@ -22,14 +61,6 @@ const recuperarMaioresSaldos = (lancamentos) => {
 
 const recuperarMaioresMedias = (lancamentos) => {
     return []
-}
-
-const validarCPF = (cpf) => {
-   if (isNaN(cpf)) {
-      return "O CPF só aceita caracteres numéricos"
-   }
-
-
 }
 
 const verificarDigitosVerificadores = (cpf) => {
