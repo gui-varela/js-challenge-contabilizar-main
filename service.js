@@ -10,7 +10,7 @@ const validarEntradaDeDados = (lancamento) => {
    }
 
    if (lancamento.cpf && !isNaN(lancamento.cpf)) {
-      const cpfValido = verificarDigitosVerificadores(lancamento.cpf)
+      const cpfValido = validarDigitosVerificadores(lancamento.cpf)
 
       if (!cpfValido) {
          erros.push("Insira um CPF válido")
@@ -129,7 +129,7 @@ const agruparSaldosPorCPF = (lancamentos) => {
    return saldosPorCPF
 }
 
-const verificarDigitosVerificadores = (cpf) => {
+const validarDigitosVerificadores = (cpf) => {
    const cpfTransformadoEmArray = cpf.split('')
    const novePrimeirosDigitos = cpfTransformadoEmArray.slice(0,9)
 
