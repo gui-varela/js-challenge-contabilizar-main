@@ -50,25 +50,6 @@ const recuperarSaldosPorConta = (lancamentos) => {
    return saldosTipados
 }
 
-const agruparSaldosPorCPF = (lancamentos) => {
-   const saldosPorCPF = []
-   
-   lancamentos.forEach((lancamento) => {
-      const saldoJaRegistrado = saldosPorCPF.find(saldo => saldo.cpf === lancamento.cpf)
-
-      if (saldoJaRegistrado) {
-         const inidiceRegistro = saldosPorCPF.indexOf(saldoJaRegistrado)
-
-         saldosPorCPF[inidiceRegistro].valor += lancamento.valor
-         saldosPorCPF[inidiceRegistro].totalTransacoes += 1
-      } else {
-         saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor, totalTransacoes: 1})
-      }
-   })
-
-   return saldosPorCPF
-}
-
 const recuperarMaiorMenorLancamentos = (cpf, lancamentos) => {
    const lancamentosDaConta = lancamentos.filter(lancamento => lancamento.cpf === cpf)
 
@@ -129,7 +110,24 @@ const recuperarMaioresMedias = (lancamentos) => {
    return topTresMedias
 }
 
+const agruparSaldosPorCPF = (lancamentos) => {
+   const saldosPorCPF = []
+   
+   lancamentos.forEach((lancamento) => {
+      const saldoJaRegistrado = saldosPorCPF.find(saldo => saldo.cpf === lancamento.cpf)
 
+      if (saldoJaRegistrado) {
+         const inidiceRegistro = saldosPorCPF.indexOf(saldoJaRegistrado)
+
+         saldosPorCPF[inidiceRegistro].valor += lancamento.valor
+         saldosPorCPF[inidiceRegistro].totalTransacoes += 1
+      } else {
+         saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor, totalTransacoes: 1})
+      }
+   })
+
+   return saldosPorCPF
+}
 
 const verificarDigitosVerificadores = (cpf) => {
    const cpfTransformadoEmArray = cpf.split('')
