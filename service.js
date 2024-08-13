@@ -152,9 +152,11 @@ const verificarDigitosVerificadores = (cpf) => {
  * @returns {String}
  */
 const calculaPrimeiroDigitoVerificador = (novePrimeirosDigitosCPF) => {
+   const valorInicial = 0
+
    const somatorio = novePrimeirosDigitosCPF.reduce(
       (accumulator, currentValue, index) => accumulator + ((10 - index) * parseInt(currentValue)),
-      0
+      valorInicial
    )
 
    const resto = somatorio % 11
@@ -182,9 +184,11 @@ const calculaSegundoDigitoVerificador = (novePrimeirosDigitosCPF) => {
    const primeiroDigitoVerificador = calculaPrimeiroDigitoVerificador(novePrimeirosDigitosCPF)
    const novePrimeirosComPrimeiroDigitoVerificador = [...novePrimeirosDigitosCPF, primeiroDigitoVerificador]
    
+   const valorInicial = 0
+
    const somatorio = novePrimeirosComPrimeiroDigitoVerificador.reduce(
       (accumulator, currentValue, index) => accumulator + ((11 - index) * parseInt(currentValue)),
-      0
+      valorInicial
    )
 
    const resto = somatorio % 11
