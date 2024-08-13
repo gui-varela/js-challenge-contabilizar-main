@@ -130,10 +130,12 @@ const validarDigitosVerificadores = (cpf) => {
    const cpfTransformadoEmArray = cpf.split('')
    const novePrimeirosDigitos = cpfTransformadoEmArray.slice(0,9)
 
-   const primeiroDigitoVerificadorValido = calculaPrimeiroDigitoVerificador(novePrimeirosDigitos) === cpf[9]
-   const segundoDigitoVerificadorValido = calculaSegundoDigitoVerificador(novePrimeirosDigitos) === cpf[10]
+   const primeiroDigitoVerificador = calculaPrimeiroDigitoVerificador(novePrimeirosDigitos)
+   const segundoDigitoVerificador = calculaSegundoDigitoVerificador(novePrimeirosDigitos, primeiroDigitoVerificador)
 
-   return primeiroDigitoVerificadorValido && segundoDigitoVerificadorValido
+   const cpfValido = primeiroDigitoVerificador === cpf[9] && segundoDigitoVerificador === cpf[10]
+
+   return cpfValido
 }
 
 /**
@@ -177,8 +179,7 @@ const calculaPrimeiroDigitoVerificador = (novePrimeirosDigitosCPF) => {
  * @param   {String[]} novePrimeirosDigitosCPF  Parâmetro obrigatório
  * @returns {String}
  */
-const calculaSegundoDigitoVerificador = (novePrimeirosDigitosCPF) => {
-   const primeiroDigitoVerificador = calculaPrimeiroDigitoVerificador(novePrimeirosDigitosCPF)
+const calculaSegundoDigitoVerificador = (novePrimeirosDigitosCPF, primeiroDigitoVerificador) => {
    const novePrimeirosComPrimeiroDigitoVerificador = [...novePrimeirosDigitosCPF, primeiroDigitoVerificador]
    
    const valorInicial = 0
