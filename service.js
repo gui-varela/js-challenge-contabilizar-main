@@ -1,3 +1,6 @@
+const INDICE_PRIMEIRO_DIGITO_VERIFICADOR = 9
+const INDICE_SEGUNDO_DIGITO_VERIFICADOR = 10
+
 const validarEntradaDeDados = (lancamento) => {
    const erros = []
 
@@ -130,10 +133,13 @@ const validarDigitosVerificadores = (cpf) => {
    const cpfTransformadoEmArray = cpf.split('')
    const novePrimeirosDigitos = cpfTransformadoEmArray.slice(0,9)
 
-   const primeiroDigitoVerificador = calculaPrimeiroDigitoVerificador(novePrimeirosDigitos)
-   const segundoDigitoVerificador = calculaSegundoDigitoVerificador(novePrimeirosDigitos, primeiroDigitoVerificador)
+   const primeiroDigitoVerificadorCalculado = calculaPrimeiroDigitoVerificador(novePrimeirosDigitos)
+   const segundoDigitoVerificadorCalculado = calculaSegundoDigitoVerificador(novePrimeirosDigitos, primeiroDigitoVerificadorCalculado)
 
-   const cpfValido = primeiroDigitoVerificador === cpf[9] && segundoDigitoVerificador === cpf[10]
+   const cpfValido = (
+      primeiroDigitoVerificadorCalculado === cpf[INDICE_PRIMEIRO_DIGITO_VERIFICADOR] && 
+      segundoDigitoVerificadorCalculado === cpf[INDICE_SEGUNDO_DIGITO_VERIFICADOR]
+   )
 
    return cpfValido
 }
