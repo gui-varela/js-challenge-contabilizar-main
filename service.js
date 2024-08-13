@@ -79,14 +79,11 @@ const recuperarMaioresSaldos = (lancamentos) => {
       }
    })
 
-   const saldosOrdenadosPorValor = saldosTipados.sort((a,b) => b.valor - a.valor)
+   const topTresMaioresSaldos = saldosTipados
+      .sort((a,b) => b.valor - a.valor)
+      .slice(0, 3)
 
-   if (saldosOrdenadosPorValor.length >= 3) {
-      const topTresMaioresSaldos = saldosOrdenadosPorValor.slice(0, 3)
-      return topTresMaioresSaldos
-   }
-
-   return saldosOrdenadosPorValor
+   return topTresMaioresSaldos
 }
 
 const recuperarMaioresMedias = (lancamentos) => {
