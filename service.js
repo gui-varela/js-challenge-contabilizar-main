@@ -39,11 +39,18 @@ const recuperarSaldosPorConta = (lancamentos) => {
       return []
    }
 
-   const saldosPorCPF = agruparLançamentosPorCPF(lancamentos)
-   return saldosPorCPF
+   const saldosPorCPF = agruparSaldosPorCPF(lancamentos)
+   const saldosTipados = saldosPorCPF.map(registro => {
+      return {
+         cpf: registro.cpf, 
+         valor: registro.valor
+      }
+   })
+
+   return saldosTipados
 }
 
-const agruparLançamentosPorCPF = (lancamentos) => {
+const agruparSaldosPorCPF = (lancamentos) => {
    const saldosPorCPF = []
    
    lancamentos.forEach((lancamento) => {
@@ -51,12 +58,14 @@ const agruparLançamentosPorCPF = (lancamentos) => {
 
       if (saldoJaRegistrado) {
          const inidiceRegistro = saldosPorCPF.indexOf(saldoJaRegistrado)
+
          saldosPorCPF[inidiceRegistro].valor += lancamento.valor
+         saldosPorCPF[inidiceRegistro].totalTransacoes += 1
       } else {
-         saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor})
+         saldosPorCPF.push({cpf: lancamento.cpf, valor: lancamento.valor, totalTransacoes: 1})
       }
    })
-   
+
    return saldosPorCPF
 }
 
@@ -80,8 +89,16 @@ const recuperarMaiorMenorLancamentos = (cpf, lancamentos) => {
 }
 
 const recuperarMaioresSaldos = (lancamentos) => {
-   const saldosPorCPF = agruparLançamentosPorCPF(lancamentos)
-   const saldosOrdenadosPorValor = saldosPorCPF.sort((a,b) => b.valor - a.valor)
+   const saldosPorCPF = agruparSaldosPorCPF(lancamentos)
+
+   const saldosTipados = saldosPorCPF.map(registro => {
+      return {
+         cpf: registro.cpf, 
+         valor: registro.valor
+      }
+   })
+
+   const saldosOrdenadosPorValor = saldosTipados.sort((a,b) => b.valor - a.valor)
 
    if (saldosOrdenadosPorValor.length >= 3) {
       const topTresMaioresSaldos = saldosOrdenadosPorValor.slice(0, 3)
@@ -92,8 +109,27 @@ const recuperarMaioresSaldos = (lancamentos) => {
 }
 
 const recuperarMaioresMedias = (lancamentos) => {
-    return []
+   if (!lancamentos || lancamentos.length === 0) {
+      return []
+   }
+   
+   const saldosPorCPF = agruparSaldosPorCPF(lancamentos)
+
+   const mediasTransacoes = saldosPorCPF.map(registro => {
+      return {
+         cpf: registro.cpf,
+         valor: registro.valor / registro.totalTransacoes
+      }
+   })
+
+   const topTresMedias = mediasTransacoes
+      .sort((a,b) => b.valor - a.valor)
+      .slice(0, 3)
+
+   return topTresMedias
 }
+
+
 
 const verificarDigitosVerificadores = (cpf) => {
    const cpfTransformadoEmArray = cpf.split('')
@@ -111,7 +147,7 @@ const verificarDigitosVerificadores = (cpf) => {
  * - Multiplicar o primeiro dígito por 10, o segundo por 9 e assim por diante, até multiplicar o nono por 2
  * - Somar o resultado dessas multiplicações
  * - Dividir essa soma por 11 e descobrir o resto
- * - Se o resto acima for menor que 2, o dígito verificador é 0 (zero)
+ * - Se o resto for menor que 2, o dígito verificador é 0 (zero)
  * - Senão subtrair este resto de 11. Este será o valor do dígito verificador
  * 
  * @param   {String[]} novePrimeirosDigitosCPF  Parâmetro obrigatório
@@ -138,7 +174,7 @@ const calculaPrimeiroDigitoVerificador = (novePrimeirosDigitosCPF) => {
  * - Multiplicar o primeiro dígito por 11, o segundo por 10 e assim por diante, até multiplicar o décimo (que é o dígito verificador) por 2
  * - Somar o resultado dessas multiplicações
  * - Dividir essa soma por 11 e descobrir o resto
- * - Se o resto acima for menor que 2, o dígito verificador é 0 (zero)
+ * - Se o resto for menor que 2, o dígito verificador é 0 (zero)
  * - Senão subtrair este resto de 11. Este será o valor do dígito verificador
  * 
  * @param   {String[]} novePrimeirosDigitosCPF  Parâmetro obrigatório
