@@ -96,14 +96,14 @@ const recuperarMaioresMedias = (lancamentos) => {
    
    const saldosPorCPF = agruparSaldosPorCPF(lancamentos)
 
-   const mediasTransacoes = saldosPorCPF.map(registro => {
+   const mediasTransacoesPorCPF = saldosPorCPF.map(registro => {
       return {
          cpf: registro.cpf,
          valor: registro.valor / registro.totalTransacoes
       }
    })
 
-   const topTresMedias = mediasTransacoes
+   const topTresMedias = mediasTransacoesPorCPF
       .sort((a,b) => b.valor - a.valor)
       .slice(0, 3)
 
